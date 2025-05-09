@@ -3,14 +3,16 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// ✅ تحميل متغيرات البيئة
+// ✅ تحميل متغيرات البيئة من .env
 dotenv.config();
 
 const app = express();
+
+// ✅ إعدادات أساسية
 app.use(cors());
 app.use(express.json());
 
-// ✅ المسارات
+// ✅ استيراد المسارات (Routes)
 import employeeRoutes from './routes/employees.routes.js';
 import courseRoutes from './routes/courses.routes.js';
 import lectureRoutes from './routes/lectures.routes.js';
@@ -19,22 +21,22 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/lectures', lectureRoutes);
 
-// ✅ اختبار بسيط للتأكد من عمل السيرفر
+// ✅ نقطة اختبار الاتصال (homepage)
 app.get('/', (req, res) => {
   res.send('✅ Smart Aura Backend is running!');
 });
 
-// ✅ الاتصال بقاعدة البيانات
+// ✅ الاتصال بقاعدة البيانات MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log('✅ MongoDB Connected Successfully'))
-  .catch(err => console.error('❌ MongoDB Connection Error:', err));
+  .catch((err) => console.error('❌ MongoDB Connection Error:', err));
 
-// ✅ تشغيل السيرفر
+// ✅ تشغيل الخادم
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://127.0.0.1:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
