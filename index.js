@@ -2,8 +2,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // ✅ تحميل متغيرات البيئة
 dotenv.config();
@@ -11,7 +9,6 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
 
 // ✅ المسارات
 import employeeRoutes from './routes/employees.routes.js';
@@ -22,14 +19,9 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/lectures', lectureRoutes);
 
-// ✅ تعريف مجلد public ليخدم صفحات HTML
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ✅ نقطة البداية الرئيسية
+// ✅ اختبار بسيط للتأكد من عمل السيرفر
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'instructor-portal.html'));
+  res.send('✅ Smart Aura Backend is running!');
 });
 
 // ✅ الاتصال بقاعدة البيانات
