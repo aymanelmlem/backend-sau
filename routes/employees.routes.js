@@ -42,5 +42,32 @@ router.patch("/approve/admin/:id", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to approve admin", error: err.message });
   }
 });
+// ✅ إرجاع كل المحاضرين حسب حالة التفعيل
+router.get("/approved/instructor", async (req, res) => {
+  try {
+    const approved = await Employee.find({ role: "instructor", isApproved: true });
+    res.json({ success: true, data: approved });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to load approved instructors", error: err.message });
+  }
+});
+
+router.get("/approved/admin", async (req, res) => {
+  try {
+    const approved = await Employee.find({ role: "admin", isApproved: true });
+    res.json({ success: true, data: approved });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to load approved admins", error: err.message });
+  }
+});
+
+router.get("/approved/student", async (req, res) => {
+  try {
+    const approved = await Employee.find({ role: "student", isApproved: true });
+    res.json({ success: true, data: approved });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to load approved students", error: err.message });
+  }
+});
 
 export default router;
