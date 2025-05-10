@@ -8,8 +8,11 @@ dotenv.config();
 
 const app = express();
 
-// ✅ إعدادات أساسية
-app.use(cors());
+// ✅ إعدادات CORS مخصصة لـ Vercel فقط
+app.use(cors({
+  origin: "https://smart-aura-frontend.vercel.app"
+}));
+
 app.use(express.json());
 
 // ✅ استيراد المسارات (Routes)
