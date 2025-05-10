@@ -29,5 +29,39 @@ router.post('/login', async (req, res) => {
 
   res.json({ success: true, data: student });
 });
+import express from "express";
+import Student from "../models/student.model.js";
+import Course from "../models/course.model.js";
+
+const router = express.Router();
+
+// 🔗 تسجيل طالب في كورس
+router.post("/enroll", async (req, res) => {
+  const { studentId, courseId } = req.body;
+
+  try {
+    const student = await Student.findById(studentId);
+    const course = await Course.findById(courseId);
+
+    if (!student || !course) {
+      return res.status(404).json({ success: false, message: "Student or Course not found" });
+    }
+
+    // ✅ تأكد أن الطالب غير مسجل بالفعل
+    if (student.courses.includes(courseId)) {
+      return res.status(400).json({ success: false, message: "Already enrolled in this course" });
+    }
+
+    student.courses.push(courseId);
+    await student.save();
+
+    res.json({ success: true, message: "Enrolled successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Enrollment failed", error: err.message });
+  }
+});
+
+export default router;
+
 
 export default router;
