@@ -9,10 +9,9 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 const app = express();
 
-// ✅ إعداد CORS للسماح لجميع النطاقات مؤقتًا
-app.use(cors({
-  origin: '*'
-}));
+// ✅ إعداد CORS للسماح لجميع النطاقات (مؤقتًا)
+app.use(cors({ origin: '*' }));
+app.options('*', cors()); // ✅ لتفعيل الرد على Preflight requests (OPTIONS)
 
 // ✅ استقبال JSON في الطلبات
 app.use(express.json());
