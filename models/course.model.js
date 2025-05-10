@@ -1,5 +1,3 @@
-// models/course.model.js
-
 import mongoose from 'mongoose';
 
 const courseSchema = new mongoose.Schema({
@@ -7,16 +5,23 @@ const courseSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  description: String,
-  instructor: {
+  description: {
+    type: String
+  },
+  instructorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Employee',
     required: true
   },
   isVisible: {
     type: Boolean,
-    default: true // ✅ الكورس ظاهر افتراضياً عند إنشائه
+    default: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
-export default mongoose.model('Course', courseSchema);
+const Course = mongoose.model('Course', courseSchema);
+export default Course;

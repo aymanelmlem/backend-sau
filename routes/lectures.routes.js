@@ -5,88 +5,49 @@ import Lecture from '../models/lecture.model.js';
 
 const router = express.Router();
 
-// 🗂️ إعداد تخزين الملفات
+// إعداد تخزين الملفات
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // تأكد من وجود هذا المجلد في جذر المشروع
   },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const base = path.basename(file.originalname, ext);
-    cb(null, `${base}-${Date.now()}${ext}`);
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
+    cb(null, uniqueName);
   }
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
-// ✅ إضافة محاضرة مع ملفات
-router.post('/', upload.array('files'), async (req, res) => {
+// ✅ رفع محاضرة جديدة
+router.post('/upload', upload.array('files', 10), async (req, res) => {
   try {
-    const { title, description, courseId, videoUrl, mp3Url } = req.body;
-    const files = req.files?.map(file => file.filename) || [];
+    const {
+      title,
+      description,
+      category,
+      videoUrl,
+      mp3Url,
+      courseId
+    } = req.body;
+
+    const fileNames = req.files.map(file => file.filename);
 
     const lecture = new Lecture({
       title,
       description,
-      course: courseId,
+      category,
       videoUrl,
       mp3Url,
-      files
+      files: fileNames,
+      courseId
     });
 
     await lecture.save();
     res.status(201).json({ success: true, data: lecture });
   } catch (err) {
-    res.status(400).json({ success: false, message: 'Failed to add lecture', error: err.message });
+    console.error('Upload Error:', err);
+    res.status(500).json({ success: false, message: 'Lecture upload failed', error: err.message });
   }
 });
-
-// ✅ جلب المحاضرات حسب معرف الكورس
-router.get('/course/:courseId', async (req, res) => {
-  try {
-    const lectures = await Lecture.find({ course: req.params.courseId });
-    res.json({ success: true, data: lectures });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to fetch lectures', error: err.message });
-  }
-});
-// ✅ الحصول على محاضرة واحدة للتعديل
-router.get('/:id', async (req, res) => {
-  try {
-    const lecture = await Lecture.findById(req.params.id);
-    if (!lecture) {
-      return res.status(404).json({ success: false, message: 'Lecture not found' });
-    }
-    res.json({ success: true, data: lecture });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to get lecture' });
-  }
-});
-// ✅ Get single lecture
-router.get('/:id', async (req, res) => {
-  const lecture = await Lecture.findById(req.params.id);
-  if (!lecture) return res.status(404).json({ success: false, message: "Lecture not found" });
-  res.json({ success: true, data: lecture });
-});
-
-// ✅ Update lecture
-router.put('/:id', upload.array('files'), async (req, res) => {
-  try {
-    const lecture = await Lecture.findByIdAndUpdate(req.params.id, {
-      title: req.body.title,
-      description: req.body.description,
-      videoUrl: req.body.videoUrl,
-      mp3Url: req.body.mp3Url,
-      $push: {
-        files: { $each: req.files.map(file => file.filename) }
-      }
-    }, { new: true });
-
-    res.json({ success: true, data: lecture });
-  } catch (err) {
-    res.status(500).json({ success: false, message: 'Update failed' });
-  }
-});
-
 
 export default router;

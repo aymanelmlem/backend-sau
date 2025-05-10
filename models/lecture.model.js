@@ -5,15 +5,28 @@ const lectureSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  videoUrl: {
-    type: String
-  },
   description: {
     type: String
   },
+  category: {
+    type: String,
+    enum: ['Basics', 'Advanced', 'Case Study'], // ✳️ يمكنك تعديل أو إضافة المزيد
+    default: 'Basics'
+  },
+  videoUrl: {
+    type: String
+  },
+  mp3Url: {
+    type: String
+  },
   files: [{
-    type: String  // سيتم حفظ اسم الملفات هنا فقط
+    type: String // اسم الملف أو رابط التخزين (مثلاً /uploads/lecture1.pdf)
   }],
+  courseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Course',
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
