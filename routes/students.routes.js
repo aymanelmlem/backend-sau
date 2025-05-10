@@ -55,5 +55,16 @@ router.post("/enroll", async (req, res) => {
     res.status(500).json({ success: false, message: "Enrollment failed", error: err.message });
   }
 });
-
+// 🧾 إرجاع كورسات طالب معين
+router.get('/:id/courses', async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id).populate('courses');
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+    res.json({ success: true, data: student.courses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to load courses', error: err.message });
+  }
+});
 export default router;
