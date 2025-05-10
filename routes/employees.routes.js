@@ -1,4 +1,4 @@
-import express from 'express'; // ✅ هذا السطر ناقص في كودك
+import express from 'express';
 import Employee from '../models/Employee.js';
 
 const router = express.Router();
@@ -26,7 +26,11 @@ router.get("/pending/admin", async (req, res) => {
 // ✅ تفعيل حساب محاضر
 router.patch("/approve/instructor/:id", async (req, res) => {
   try {
-    const updated = await Employee.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+    const updated = await Employee.findByIdAndUpdate(
+      req.params.id,
+      { isApproved: true },
+      { new: true }
+    );
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(500).json({ success: false, message: "Failed to approve instructor", error: err.message });
@@ -36,13 +40,18 @@ router.patch("/approve/instructor/:id", async (req, res) => {
 // ✅ تفعيل حساب إداري
 router.patch("/approve/admin/:id", async (req, res) => {
   try {
-    const updated = await Employee.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+    const updated = await Employee.findByIdAndUpdate(
+      req.params.id,
+      { isApproved: true },
+      { new: true }
+    );
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(500).json({ success: false, message: "Failed to approve admin", error: err.message });
   }
 });
-// ✅ إرجاع كل المحاضرين حسب حالة التفعيل
+
+// ✅ جلب المحاضرين المفعلين
 router.get("/approved/instructor", async (req, res) => {
   try {
     const approved = await Employee.find({ role: "instructor", isApproved: true });
@@ -69,12 +78,12 @@ router.get("/approved/student", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to load approved students", error: err.message });
   }
 });
-// ✅ إنشاء حساب موظف (محاضر أو إداري)
+
+// ✅ تسجيل حساب موظف جديد
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // تحقق من وجود المستخدم مسبقًا
     const existing = await Employee.findOne({ email });
     if (existing) {
       return res.status(400).json({ success: false, message: "Email already exists" });
@@ -88,7 +97,8 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ success: false, message: "Signup failed", error: err.message });
   }
 });
-// ✅ تسجيل الدخول (login)
+
+// ✅ تسجيل الدخول بدون تشفير
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -103,7 +113,5 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: "Login failed", error: err.message });
   }
 });
-
-
 
 export default router;
