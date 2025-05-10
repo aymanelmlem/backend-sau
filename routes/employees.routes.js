@@ -1,46 +1,42 @@
-import express from 'express';
-import {
-  signup,
-  login,
-  activateEmployee,
-  getPendingEmployees,
-  getActiveEmployees
-} from '../controllers/employee.controller.js';
+// ✅ استيراد الموديل
+import Employee from "../models/employee.model.js";
 
-import Employee from '../models/Employee.js';
-
-const router = express.Router();
-
-// 🔐 تسجيل موظف جديد
-router.post('/signup', signup);
-
-// 🔐 تسجيل الدخول
-router.post('/login', login);
-
-// ✅ تفعيل موظف بواسطة المشرف الأعلى
-router.patch('/activate/:id', activateEmployee);
-
-// 🕒 عرض الموظفين غير المفعلين
-router.get('/pending', getPendingEmployees);
-
-// ✅ عرض الموظفين المفعّلين فقط
-router.get('/active', getActiveEmployees);
-
-// 🧪 جلب كل الموظفين (للتجربة فقط)
-router.get('/all', async (req, res) => {
+// ✅ جلب المحاضرين غير المفعلين
+router.get("/pending/instructor", async (req, res) => {
   try {
-    const employees = await Employee.find();
-    const formatted = employees.map(emp => ({
-      id: emp._id,
-      name: emp.name,
-      email: emp.email,
-      role: emp.role,
-      isApproved: emp.isApproved
-    }));
-    res.json({ success: true, data: formatted });
+    const pending = await Employee.find({ role: "instructor", isApproved: false });
+    res.json({ success: true, data: pending });
   } catch (err) {
-    res.status(500).json({ success: false, message: '❌ Failed to fetch employees' });
+    res.status(500).json({ success: false, message: "Failed to load instructors", error: err.message });
   }
 });
 
-export default router;
+// ✅ جلب الإداريين غير المفعلين
+router.get("/pending/admin", async (req, res) => {
+  try {
+    const pending = await Employee.find({ role: "admin", isApproved: false });
+    res.json({ success: true, data: pending });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to load admins", error: err.message });
+  }
+});
+
+// ✅ تفعيل حساب محاضر
+router.patch("/approve/instructor/:id", async (req, res) => {
+  try {
+    const updated = await Employee.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to approve instructor", error: err.message });
+  }
+});
+
+// ✅ تفعيل حساب إداري
+router.patch("/approve/admin/:id", async (req, res) => {
+  try {
+    const updated = await Employee.findByIdAndUpdate(req.params.id, { isApproved: true }, { new: true });
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to approve admin", error: err.message });
+  }
+});
