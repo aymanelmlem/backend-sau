@@ -1,5 +1,5 @@
 // ✅ استيراد الموديل
-import Employee from "../models/employee.model.js";
+import Employee from '../models/Employee.js';
 
 // ✅ جلب المحاضرين غير المفعلين
 router.get("/pending/instructor", async (req, res) => {
