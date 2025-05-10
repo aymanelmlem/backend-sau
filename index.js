@@ -9,9 +9,9 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 const app = express();
 
-// ✅ إعداد CORS للسماح بالتواصل مع Vercel
+// ✅ إعداد CORS للسماح لجميع النطاقات مؤقتًا
 app.use(cors({
-  origin: 'https://smart-aura-frontend.vercel.app'
+  origin: '*'
 }));
 
 // ✅ استقبال JSON في الطلبات
