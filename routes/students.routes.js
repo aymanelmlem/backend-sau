@@ -76,4 +76,15 @@ router.get('/approved', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to load approved students', error: err.message });
   }
 });
+
+
+// ✅ جلب الطلاب غير المفعّلين
+router.get('/pending', async (req, res) => {
+  try {
+    const pending = await Student.find({ isApproved: false });
+    res.json({ success: true, data: pending });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Failed to load pending students", error: err.message });
+  }
+});
 export default router;
