@@ -1,5 +1,7 @@
-// ✅ استيراد الموديل
+import express from 'express'; // ✅ هذا السطر ناقص في كودك
 import Employee from '../models/Employee.js';
+
+const router = express.Router();
 
 // ✅ جلب المحاضرين غير المفعلين
 router.get("/pending/instructor", async (req, res) => {
@@ -40,3 +42,5 @@ router.patch("/approve/admin/:id", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to approve admin", error: err.message });
   }
 });
+
+export default router;
