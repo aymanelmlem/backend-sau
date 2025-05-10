@@ -67,4 +67,13 @@ router.get('/:id/courses', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to load courses', error: err.message });
   }
 });
+// ✅ إرجاع الطلاب المفعلين فقط
+router.get('/approved', async (req, res) => {
+  try {
+    const students = await Student.find({ isApproved: true });
+    res.json({ success: true, data: students });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to load approved students', error: err.message });
+  }
+});
 export default router;
