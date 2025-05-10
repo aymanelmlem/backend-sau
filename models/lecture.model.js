@@ -1,11 +1,23 @@
 import mongoose from 'mongoose';
 
 const lectureSchema = new mongoose.Schema({
-  course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
-  title: { type: String, required: true },
-  description: { type: String },
-  files: [{ type: String }], // روابط الملفات (PDF, PPT, MP4...)
-  createdAt: { type: Date, default: Date.now }
+  title: {
+    type: String,
+    required: true
+  },
+  videoUrl: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+  files: [{
+    type: String  // سيتم حفظ اسم الملفات هنا فقط
+  }],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const Lecture = mongoose.model('Lecture', lectureSchema);
