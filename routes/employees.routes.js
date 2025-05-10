@@ -88,6 +88,21 @@ router.post('/signup', async (req, res) => {
     res.status(500).json({ success: false, message: "Signup failed", error: err.message });
   }
 });
+// ✅ تسجيل الدخول (login)
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const employee = await Employee.findOne({ email, password, isApproved: true });
+
+    if (!employee) {
+      return res.status(401).json({ success: false, message: "Invalid credentials or not approved" });
+    }
+
+    res.status(200).json({ success: true, data: employee });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Login failed", error: err.message });
+  }
+});
 
 
 export default router;
