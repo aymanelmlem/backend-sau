@@ -19,10 +19,13 @@ app.use(express.json());
 import employeeRoutes from './routes/employees.routes.js';
 import courseRoutes from './routes/courses.routes.js';
 import lectureRoutes from './routes/lectures.routes.js';
+import studentRoutes from './routes/students.routes.js';  // ✅ تم إضافته
 
+// ✅ ربط المسارات بالتطبيق
 app.use('/api/employees', employeeRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/lectures', lectureRoutes);
+app.use('/api/students', studentRoutes);  // ✅ تم ربطه
 
 // ✅ نقطة اختبار الاتصال (homepage)
 app.get('/', (req, res) => {

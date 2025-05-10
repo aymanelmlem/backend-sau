@@ -23,21 +23,7 @@ router.post('/login', async (req, res) => {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
 
-  if (!student.isApproved) {
-    return res.status(403).json({ success: false, message: 'Account not approved yet' });
-  }
-
   res.json({ success: true, data: student });
-});
-
-// ✅ جلب كل الطلاب المفعلين فقط
-router.get('/approved', async (req, res) => {
-  try {
-    const approvedStudents = await Student.find({ isApproved: true });
-    res.json({ success: true, data: approvedStudents });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Failed to fetch approved students', error: error.message });
-  }
 });
 
 export default router;
