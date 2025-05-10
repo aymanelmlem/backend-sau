@@ -69,5 +69,25 @@ router.get("/approved/student", async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to load approved students", error: err.message });
   }
 });
+// ✅ إنشاء حساب موظف (محاضر أو إداري)
+router.post('/signup', async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    // تحقق من وجود المستخدم مسبقًا
+    const existing = await Employee.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ success: false, message: "Email already exists" });
+    }
+
+    const newEmployee = new Employee({ name, email, password, role, isApproved: false });
+    await newEmployee.save();
+
+    res.status(201).json({ success: true, data: newEmployee });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Signup failed", error: err.message });
+  }
+});
+
 
 export default router;
