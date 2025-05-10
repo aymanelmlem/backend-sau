@@ -1,5 +1,6 @@
-import express from 'express';
-import Student from '../models/student.model.js';
+import express from "express";
+import Student from "../models/student.model.js";
+import Course from "../models/course.model.js";
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.post('/signup', async (req, res) => {
     res.status(400).json({
       success: false,
       message: 'Signup failed',
-      error: err.message   // ✅ هذا السطر هو الجديد
+      error: err.message
     });
   }
 });
@@ -29,11 +30,6 @@ router.post('/login', async (req, res) => {
 
   res.json({ success: true, data: student });
 });
-import express from "express";
-import Student from "../models/student.model.js";
-import Course from "../models/course.model.js";
-
-const router = express.Router();
 
 // 🔗 تسجيل طالب في كورس
 router.post("/enroll", async (req, res) => {
@@ -47,7 +43,6 @@ router.post("/enroll", async (req, res) => {
       return res.status(404).json({ success: false, message: "Student or Course not found" });
     }
 
-    // ✅ تأكد أن الطالب غير مسجل بالفعل
     if (student.courses.includes(courseId)) {
       return res.status(400).json({ success: false, message: "Already enrolled in this course" });
     }
@@ -60,8 +55,5 @@ router.post("/enroll", async (req, res) => {
     res.status(500).json({ success: false, message: "Enrollment failed", error: err.message });
   }
 });
-
-export default router;
-
 
 export default router;
