@@ -10,7 +10,11 @@ router.post('/signup', async (req, res) => {
     await student.save();
     res.status(201).json({ success: true, data: student });
   } catch (err) {
-    res.status(400).json({ success: false, message: 'Signup failed', error: err.message });
+    res.status(400).json({
+      success: false,
+      message: 'Signup failed',
+      error: err.message   // ✅ هذا السطر هو الجديد
+    });
   }
 });
 
