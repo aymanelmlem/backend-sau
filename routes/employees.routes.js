@@ -92,9 +92,9 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const employee = await Employee.findOne({ email, password, isApproved: true });
+    const employee = await Employee.findOne({ email, isApproved: true });
 
-    if (!employee) {
+    if (!employee || employee.password !== password) {
       return res.status(401).json({ success: false, message: "Invalid credentials or not approved" });
     }
 
@@ -103,6 +103,7 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: "Login failed", error: err.message });
   }
 });
+
 
 
 export default router;
