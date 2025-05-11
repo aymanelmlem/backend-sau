@@ -1,42 +1,39 @@
 import Course from '../models/course.model.js';
 
-// ✅ إنشاء كورس جديد
+// 📌 إنشاء كورس جديد
 export const createCourse = async (req, res) => {
   try {
-    const { title, description, isVisible, instructorId } = req.body;
+    const { title, category, description, instructorId } = req.body;
 
+    // ✅ تحقق من وجود instructorId
     if (!instructorId) {
-      return res.status(400).json({ success: false, message: 'Instructor ID is required' });
+      return res.status(400).json({ success: false, message: "Missing instructorId" });
     }
 
     const course = new Course({
       title,
+      category,
       description,
-      isVisible,
-      instructor: instructorId
+      instructorId
     });
 
     await course.save();
 
     res.status(201).json({ success: true, data: course });
   } catch (err) {
-    console.error('❌ Error creating course:', err);
-    res.status(500).json({ success: false, message: 'Failed to create course', error: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// ✅ جلب الكورسات الخاصة بمحاضر معين
+// 📌 الحصول على كورسات محاضر معين
 export const getCoursesByInstructor = async (req, res) => {
   try {
-    const { instructorId } = req.query;
-
-    if (!instructorId) {
-      return res.status(400).json({ success: false, message: 'Instructor ID is required' });
-    }
-
-    const courses = await Course.find({ instructor: instructorId }).sort({ createdAt: -1 });
-    res.json(courses);
+    const { instructorId } = req.params;
+    const courses = await Course.find({ instructorId });
+    res.status(200).json({ success: true, data: courses });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to fetch courses', error: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// ✳️ باقي الدوال حسب الحاجة...
